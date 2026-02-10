@@ -28,18 +28,73 @@
           </button>
         </div>
         <div class="section">
+          <button id="btnBestiary" class="btn-large purple darken-3 waves-effect waves-light" style="width: 100%;">
+            <i class="material-icons left">auto_stories</i>Bestiario
+          </button>
+        </div>
+        <div class="section">
           <button id="btnRanking" class="btn-large orange waves-effect waves-light" style="width: 100%;">
             <i class="material-icons left">emoji_events</i>Ranking
           </button>
         </div>
       </div>
 
-      <div id="ranking-view" style="display: none;">
-          <h4>Mejores Puntuaciones</h4>
-          <ul class="collection" id="ranking-list">
-              </ul>
-          <button id="btnBackFromRanking" class="btn grey waves-effect waves-light">Volver</button>
-      </div>
+
+
+<div id="bestiary-view" style="display: none;">
+    
+    <nav class="purple darken-4">
+        <div class="nav-wrapper">
+            <a href="#!" class="brand-logo center" style="font-size: 1.2rem;">Bestiario</a>
+            <ul class="left">
+                <li><a href="#" id="btnBackFromBestiary"><i class="material-icons">arrow_back</i></a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="progress purple lighten-4" style="margin: 0;">
+            <div class="determinate purple" style="width: 0%" id="bestiary-progress"></div>
+        </div>
+        <p class="center-align" style="margin-top:5px; font-size:0.8rem;">Descubiertos: <span id="discovered-count">0</span> / <span id="total-count">0</span></p>
+
+        <ul class="collection" id="bestiary-list" style="border: none;">
+            </ul>
+
+        <div id="bestiary-loader" class="center-align" style="margin-top: 50px;">
+            <div class="preloader-wrapper active">
+                <div class="spinner-layer spinner-purple-only">
+                    <div class="circle-clipper left"><div class="circle"></div></div>
+                    <div class="gap-patch"><div class="circle"></div></div>
+                    <div class="circle-clipper right"><div class="circle"></div></div>
+                </div>
+            </div>
+            <p>Consultando los archivos...</p>
+        </div>
+
+    </div>
+
+
+
+    <div id="ranking-view" class="container" style="display: none;">
+        
+        <h4 class="center-align header-ranking">
+            <i class="material-icons yellow-text text-darken-2">emoji_events</i>
+            Tabla de Clasificación
+        </h4>
+
+        <ul class="collection with-header z-depth-2" id="ranking-list">
+            <li class="collection-header center-align">
+                <h6>Jugadores Legendarios</h6>
+            </li>
+            </ul>
+
+        <div class="center-align section">
+            <button id="btnBackFromRanking" class="btn-large grey darken-3 waves-effect waves-light">
+                <i class="material-icons left">arrow_back</i>Volver al Menú
+            </button>
+        </div>
+
+    </div>
 
       <div id="game-container" style="display: none;">
         

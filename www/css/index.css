@@ -103,6 +103,41 @@ h1 {
 }
 
 
+
+/* Estilo para los items bloqueados del bestiario */
+#bestiary-list .collection-item {
+    min-height: 70px; /* Altura mínima para que sea fácil pulsar con el dedo */
+}
+
+/* Animación suave al entrar */
+#bestiary-view {
+    animation: fadein 0.5s;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+
+
+/* Título del Ranking */
+.header-ranking {
+    font-weight: bold;
+    text-shadow: 1px 1px 2px #000;
+    color: #fff; /* Asegúrate de tener un fondo oscuro o cambiar esto a negro */
+    margin-bottom: 30px;
+}
+
+/* Ajuste para que la lista no toque los bordes en móviles */
+#ranking-list {
+    border-radius: 10px;
+    overflow: hidden; /* Para que las esquinas redondas funcionen */
+    border: 1px solid #ddd;
+}
+
+
+
 @media screen and (prefers-color-scheme: dark) {
     body {
         background-image:linear-gradient(to bottom, #585858 0%, #1B1B1B 51%);
