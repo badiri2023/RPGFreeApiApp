@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src * data: gap: content: https://ssl.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; media-src *; img-src * data: content:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: content: https://ssl.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; media-src *; img-src * data: content:;">
     <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
-    <title>Juego RPG</title>
+    <title>Dungeon Clicker</title>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     <link rel="stylesheet" href="css/materialize.min.css"/>
@@ -12,6 +12,8 @@
   </head>
 
   <body>
+
+    <!-- NAVBAR -->
     <nav class="blue darken-3">
         <div class="nav-wrapper container">
             <span class="brand-logo center">Dungeon Clicker</span>
@@ -20,18 +22,24 @@
 
     <div class="container center-align" style="margin-top: 20px;">
 
+      <!-- ========================= -->
+      <!--       MENÚ PRINCIPAL      -->
+      <!-- ========================= -->
       <div id="main-menu">
         <h4>Menú Principal</h4>
+
         <div class="section">
           <button id="btnStart" class="btn-large green waves-effect waves-light" style="width: 100%;">
             <i class="material-icons left">play_arrow</i>Nueva Partida
           </button>
         </div>
+
         <div class="section">
           <button id="btnBestiary" class="btn-large purple darken-3 waves-effect waves-light" style="width: 100%;">
             <i class="material-icons left">auto_stories</i>Bestiario
           </button>
         </div>
+
         <div class="section">
           <button id="btnRanking" class="btn-large orange waves-effect waves-light" style="width: 100%;">
             <i class="material-icons left">emoji_events</i>Ranking
@@ -41,25 +49,35 @@
 
 
 
-<div id="bestiary-view" style="display: none;">
-    
-    <nav class="purple darken-4">
-        <div class="nav-wrapper">
-            <a href="#!" class="brand-logo center" style="font-size: 1.2rem;">Bestiario</a>
-            <ul class="left">
-                <li><a href="#" id="btnBackFromBestiary"><i class="material-icons">arrow_back</i></a></li>
-            </ul>
+      <!-- ========================= -->
+      <!--         BESTIARIO         -->
+      <!-- ========================= -->
+      <div id="bestiary-view" style="display: none;">
+
+        <nav class="purple darken-4">
+            <div class="nav-wrapper">
+                <a href="#!" class="brand-logo center" style="font-size: 1.2rem;">Bestiario</a>
+                <ul class="left">
+                    <li><a href="#" id="btnBackFromBestiary"><i class="material-icons">arrow_back</i></a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Barra de progreso -->
+        <div class="progress purple lighten-4" style="margin: 0;">
+            <div class="determinate purple" id="bestiary-progress" style="width: 0%"></div>
         </div>
-    </nav>
 
-    <div class="progress purple lighten-4" style="margin: 0;">
-            <div class="determinate purple" style="width: 0%" id="bestiary-progress"></div>
-        </div>
-        <p class="center-align" style="margin-top:5px; font-size:0.8rem;">Descubiertos: <span id="discovered-count">0</span> / <span id="total-count">0</span></p>
+        <!-- Contadores -->
+        <p class="center-align" style="margin-top:5px; font-size:0.8rem;">
+            Descubiertos: <span id="discovered-count">0</span> /
+            <span id="total-count">0</span>
+        </p>
 
-        <ul class="collection" id="bestiary-list" style="border: none;">
-            </ul>
+        <!-- Lista del bestiario -->
+        <ul class="collection" id="bestiary-list" style="border: none;"></ul>
 
+        <!-- Loader -->
         <div id="bestiary-loader" class="center-align" style="margin-top: 50px;">
             <div class="preloader-wrapper active">
                 <div class="spinner-layer spinner-purple-only">
@@ -71,12 +89,15 @@
             <p>Consultando los archivos...</p>
         </div>
 
-    </div>
+      </div>
 
 
 
-    <div id="ranking-view" class="container" style="display: none;">
-        
+      <!-- ========================= -->
+      <!--          RANKING          -->
+      <!-- ========================= -->
+      <div id="ranking-view" style="display: none;">
+
         <h4 class="center-align header-ranking">
             <i class="material-icons yellow-text text-darken-2">emoji_events</i>
             Tabla de Clasificación
@@ -86,7 +107,7 @@
             <li class="collection-header center-align">
                 <h6>Jugadores Legendarios</h6>
             </li>
-            </ul>
+        </ul>
 
         <div class="center-align section">
             <button id="btnBackFromRanking" class="btn-large grey darken-3 waves-effect waves-light">
@@ -94,34 +115,6 @@
             </button>
         </div>
 
-    </div>
-
-      <div id="game-container" style="display: none;">
-        
-        <div class="chip blue white-text z-depth-1">
-            Puntos: <span id="score-display">0</span>
-        </div>
-
-        <div id="monster-card-area" style="margin-top: 10px;"></div>
-
-        <div id="loader" class="preloader-wrapper small active" style="display:none; margin: 20px auto;">
-            <div class="spinner-layer spinner-red-only">
-              <div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div>
-            </div>
-        </div>
-
-        <div class="row" id="game-controls" style="margin-top: 10px;">
-            <div class="col s6">
-                <button id="btn-attack" class="btn red darken-1 waves-effect waves-light" style="width: 100%;">
-                    <i class="material-icons left">swords</i>Atacar
-                </button>
-            </div>
-            <div class="col s6">
-                <button id="btn-run" class="btn grey darken-1 waves-effect waves-light" style="width: 100%;">
-                    <i class="material-icons left">directions_run</i>Huir
-                </button>
-            </div>
-        </div>
       </div>
 
     </div>
