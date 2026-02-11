@@ -1,126 +1,119 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: content: https://ssl.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; media-src *; img-src * data: content:;">
     <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
-    <title>Dungeon Clicker</title>
-
+    <title>Monster Searcher</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     <link rel="stylesheet" href="css/materialize.min.css"/>
-    <link rel="stylesheet" href="css/style.css"/>
-  </head>
+</head>
 
-  <body>
+<body>
+<!-- NAVBAR -->
+<nav class="blue darken-3">
+    <div class="nav-wrapper center-align">
+        <span class="brand-logo">Monster Searcher</span>
+    </div>
+</nav>
 
-    <!-- NAVBAR -->
-    <nav class="blue darken-3">
-        <div class="nav-wrapper container">
-            <span class="brand-logo center">Dungeon Clicker</span>
-        </div>
-    </nav>
+<div class="container center-align" style="margin-top: 20px;">
+    <!--Menu-->
 
-    <div class="container center-align" style="margin-top: 20px;">
-
-      <!-- ========================= -->
-      <!--       MENÚ PRINCIPAL      -->
-      <!-- ========================= -->
-      <div id="main-menu">
-        <h4>Menú Principal</h4>
-
+    <div id="main-menu">
+        <h4>Menu</h4>
         <div class="section">
-          <button id="btnStart" class="btn-large green waves-effect waves-light" style="width: 100%;">
-            <i class="material-icons left">play_arrow</i>Nueva Partida
-          </button>
+            <button id="btnStart" class="btn-large purple" style="width: 100%;">
+                <i class="material-icons left">play_arrow</i>Start Expedition
+            </button>
         </div>
-
         <div class="section">
-          <button id="btnBestiary" class="btn-large purple darken-3 waves-effect waves-light" style="width: 100%;">
-            <i class="material-icons left">auto_stories</i>Bestiario
-          </button>
-        </div>
-
-        <div class="section">
-          <button id="btnRanking" class="btn-large orange waves-effect waves-light" style="width: 100%;">
-            <i class="material-icons left">emoji_events</i>Ranking
-          </button>
-        </div>
-      </div>
-
-
-
-      <!-- ========================= -->
-      <!--         BESTIARIO         -->
-      <!-- ========================= -->
-      <div id="bestiary-view" style="display: none;">
-
-        <nav class="purple darken-4">
-            <div class="nav-wrapper">
-                <a href="#!" class="brand-logo center" style="font-size: 1.2rem;">Bestiario</a>
-                <ul class="left">
-                    <li><a href="#" id="btnBackFromBestiary"><i class="material-icons">arrow_back</i></a></li>
-                </ul>
-            </div>
-        </nav>
-
-        <!-- Barra de progreso -->
-        <div class="progress purple lighten-4" style="margin: 0;">
-            <div class="determinate purple" id="bestiary-progress" style="width: 0%"></div>
-        </div>
-
-        <!-- Contadores -->
-        <p class="center-align" style="margin-top:5px; font-size:0.8rem;">
-            Descubiertos: <span id="discovered-count">0</span> /
-            <span id="total-count">0</span>
-        </p>
-
-        <!-- Lista del bestiario -->
-        <ul class="collection" id="bestiary-list" style="border: none;"></ul>
-
-        <!-- Loader -->
-        <div id="bestiary-loader" class="center-align" style="margin-top: 50px;">
-            <div class="preloader-wrapper active">
-                <div class="spinner-layer spinner-purple-only">
-                    <div class="circle-clipper left"><div class="circle"></div></div>
-                    <div class="gap-patch"><div class="circle"></div></div>
-                    <div class="circle-clipper right"><div class="circle"></div></div>
-                </div>
-            </div>
-            <p>Consultando los archivos...</p>
-        </div>
-
-      </div>
-
-
-
-      <!-- ========================= -->
-      <!--          RANKING          -->
-      <!-- ========================= -->
-      <div id="ranking-view" style="display: none;">
-
-        <h4 class="center-align header-ranking">
-            <i class="material-icons yellow-text text-darken-2">emoji_events</i>
-            Tabla de Clasificación
-        </h4>
-
-        <ul class="collection with-header z-depth-2" id="ranking-list">
-            <li class="collection-header center-align">
-                <h6>Jugadores Legendarios</h6>
-            </li>
-        </ul>
-
-        <div class="center-align section">
-            <button id="btnBackFromRanking" class="btn-large grey darken-3 waves-effect waves-light">
-                <i class="material-icons left">arrow_back</i>Volver al Menú
+            <button id="btnBestiary" class="btn-large purple" style="width: 100%;">
+                <i class="material-icons left">auto_stories</i>Beasts
             </button>
         </div>
 
-      </div>
+        <div class="section">
+            <button id="btnRanking" class="btn-large purple" style="width: 100%;">
+                <i class="material-icons left">emoji_events</i>Ranking
+            </button>
+        </div>
+    </div>
+
+    <!--BESTIARIO-->
+    <div id="bestiary-view" style="display: none;">
+        <p class="center-align" style="margin-top:10px; font-size:1rem;">
+            Creatures:
+            <strong><span id="bestiary-discovered">0</span></strong> /
+            <strong><span id="bestiary-total">0</span></strong>
+        </p>
+        <nav class="purple darken-4">
+            <div class="nav-wrapper">
+                <a class="brand-logo center" style="font-size: 1.2rem;">Beasts</a>
+                <ul class="left">
+                    <li><a id="btnBackFromBestiary"><i class="material-icons">arrow_back</i></a></li>
+                </ul>
+            </div>
+        </nav>
+        <ul class="collection" id="bestiary-list"></ul>
+    </div>
+
+    <!--Ranking-->
+    <div id="ranking-view" style="display: none;">
+        <h4 class="center-align">
+            <i class="material-icons yellow-text text-darken-2">emoji_events</i>
+            Ranking
+        </h4>
+        <ul class="collection with-header" id="ranking-list">
+            <li class="collection-header center-align">
+                <h6>Explorers of the month</h6>
+            </li>
+        </ul>
+        <button id="btnBackFromRanking" class="btn purple">
+            <i class="material-icons left">arrow_back</i>Return
+        </button>
+    </div>
+
+    <!--Expedicion-->
+    <div id="game-view" style="display: none;">
+
+        <nav class="red darken-3">
+            <div class="nav-wrapper">
+                <a id="monster-name" class="brand-logo center" style="font-size: 1.2rem;">Monster</a>
+            </div>
+        </nav>
+        <!-- Imagen -->
+        <div style="margin-top: 20px;">
+            <div style="width: 100%; height: 300px; background: #eee; border-radius: 10px; overflow: hidden;">
+                <img id="monster-image" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+            </div>
+        </div>
+        <!-- Vida -->
+        <h5 style="margin-top: 15px;">
+            Health: <span id="monster-hp">0</span>
+        </h5>
+        <!-- Botones -->
+        <div class="row" style="margin-top: 20px;">
+            <div class="col s12">
+                <button id="btnAttack" class="btn-large red" style="width: 100%;">Attack</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s6">
+                <button id="btnRun" class="btn-large grey darken-3" style="width: 100%;">Run</button>
+            </div>
+            <div class="col s6">
+                <button id="btnEnd" class="btn-large grey darken-3" style="width: 100%;">Finish Research</button>
+            </div>
+        </div>
 
     </div>
 
-    <script src="cordova.js"></script>
-    <script src="js/materialize.min.js"></script>
-    <script src="js/index.js"></script>
-  </body>
+</div>
+
+<script src="cordova.js"></script>
+<script src="js/materialize.min.js"></script>
+<script src="js/index.js"></script>
+</body>
 </html>
