@@ -1,152 +1,197 @@
+// ===============================
+// CONFIGURACIÓN GENERAL
+// ===============================
+
 const BASE_URL = "https://www.dnd5eapi.co";
 
-document.addEventListener("deviceready", onDeviceReady, false);
+// Cabeceras API
+const myHeaders = new Headers();
+myHeaders.append("Accept", "application/json");
 
-let discovered = [];
-let currentMonster = null;
-let currentHP = 0;
+const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow"
+};
+
+document.addEventListener('deviceready', onDeviceReady, false);
+// document.addEventListener('DOMContentLoaded', onDeviceReady); // Para pruebas en PC
 
 function onDeviceReady() {
-    document.getElementById("btnStart").addEventListener("click", startExpedition);
-    document.getElementById("btnBestiary").addEventListener("click", showBestiary);
-    document.getElementById("btnRanking").addEventListener("click", showRanking);
+    // Botones del menú principal
+    document.getElementById('btnBestiary').addEventListener('click', loadBestiary);
+    document.getElementById('btnRanking').addEventListener('click', showRanking);
 
-    document.getElementById("btnBackFromBestiary").addEventListener("click", showMenu);
-    document.getElementById("btnBackFromRanking").addEventListener("click", showMenu);
-
-    document.getElementById("btnAttack").addEventListener("click", attackMonster);
-    document.getElementById("btnRun").addEventListener("click", runFromMonster);
-    document.getElementById("btnEnd").addEventListener("click", endExpedition);
-
-    loadDiscovered();
+    // Botones de navegación
+    document.getElementById('btnBackFromRanking').addEventListener('click', showMenu);
+    document.getElementById('btnBackFromBestiary').addEventListener('click', showMenu);
 }
-// ==============================================================
-// GESTION DE VISTAS
-// ==============================================================
+
+
+
+// ===============================
+// GESTIÓN DE VISTAS
+// ===============================
+
 function showMenu() {
-    hideAll();
-    document.getElementById("main-menu").style.display = "block";
-}
-function hideAll() {
-    document.getElementById("main-menu").style.display = "none";
-    document.getElementById("bestiary-view").style.display = "none";
-    document.getElementById("ranking-view").style.display = "none";
-    document.getElementById("game-view").style.display = "none";
-}
-// ==============================================================
-// EXPEDICIÓN
-// ==============================================================
-function startExpedition() {
-    hideAll();
-    document.getElementById("game-view").style.display = "block";
-    loadRandomMonster();
-}
-async function loadRandomMonster() {
-    const list = await fetch(`${BASE_URL}/api/monsters`).then(r => r.json());
-    const random = list.results[Math.floor(Math.random() * list.results.length)];
-    const monster = await fetch(`${BASE_URL}${random.url}`).then(r => r.json());
-    currentMonster = monster;
-    currentHP = monster.hit_points;
-    document.getElementById("monster-name").textContent = monster.name;
-    const img = document.getElementById("monster-image");
-    img.src = monster.image ? BASE_URL + monster.image : "https://i.imgur.com/3f4iLkR.png";
-    img.style.display = "block";
-    document.getElementById("monster-hp-text").innerHTML = `Health: <span id="monster-hp">${currentHP}</span>`;
-}
-// ==============================================================
-// Botones
-// ==============================================================
-function attackMonster() {
-    currentHP -= 10;
-    if (currentHP < 0) currentHP = 0;
-    document.getElementById("monster-hp").textContent = currentHP;
-    if (currentHP === 0) {
-        registerMonster(currentMonster.index);
-        document.getElementById("btnAttack").disabled = true;
-        document.getElementById("btnRun").disabled = true;
-        M.toast({ html: "Monster defeated" });
-        document.getElementById("monster-hp-text").innerHTML = "Explorando...";
-        setTimeout(() => {
-            loadRandomMonster();
-            document.getElementById("btnAttack").disabled = false;
-            document.getElementById("btnRun").disabled = false;
-        }, 2000);
-    }
+    document.getElementById('main-menu').style.display = 'block';
+    document.getElementById('bestiary-view').style.display = 'none';
+    document.getElementById('ranking-view').style.display = 'none';
 }
 
-function runFromMonster() {
-    registerMonster(currentMonster.index);
-    document.getElementById("btnAttack").disabled = true;
-    document.getElementById("btnRun").disabled = true;
-    M.toast({ html: "Run like a chiken" });
-    document.getElementById("monster-hp-text").innerHTML = "Explorando...";
-    setTimeout(() => {
-        loadRandomMonster();
-        document.getElementById("btnAttack").disabled = false;
-        document.getElementById("btnRun").disabled = false;
-    }, 2000);
-}
 
-function endExpedition() {
-    const name = prompt("Introduce you name mate:");
-    if (!name) return;
-    const ranking = JSON.parse(localStorage.getItem("ranking")) || [];
-    ranking.push({
-        name,
-        beasts: discovered.length,
-    });
-    localStorage.setItem("ranking", JSON.stringify(ranking));
-    M.toast({ html: "Ended Expedition" });
-    showMenu();
-}
-// ==============================================================
+
+// ===============================
 // BESTIARIO
-// ==============================================================
-function loadDiscovered() {
-    discovered = JSON.parse(localStorage.getItem("discovered")) || [];
+// ===============================
+
+// Obtener monstruos descubiertos
+function getDiscoveredMonsters() {
+    return JSON.parse(localStorage.getItem("discovered_monsters")) || [];
 }
 
-function registerMonster(index) {
-    if (!discovered.includes(index)) {
-        discovered.push(index);
-        localStorage.setItem("discovered", JSON.stringify(discovered));
+// Marcar monstruo como descubierto
+function unlockMonster(index) {
+    let list = getDiscoveredMonsters();
+    if (!list.includes(index)) {
+        list.push(index);
+        localStorage.setItem("discovered_monsters", JSON.stringify(list));
     }
 }
 
-async function showBestiary() {
-    hideAll();
-    document.getElementById("bestiary-view").style.display = "block";
-    const list = document.getElementById("bestiary-list");
-    list.innerHTML = "";
-    const all = await fetch(`${BASE_URL}/api/monsters`).then(r => r.json());
+async function loadBestiary() {
+    // Mostrar vista
+    document.getElementById('main-menu').style.display = 'none';
+    document.getElementById('ranking-view').style.display = 'none';
+    document.getElementById('bestiary-view').style.display = 'block';
 
-    document.getElementById("bestiary-total").textContent = all.results.length;
-    document.getElementById("bestiary-discovered").textContent = discovered.length;
+    const listElement = document.getElementById('bestiary-list');
+    const loader = document.getElementById('bestiary-loader');
 
-    all.results.forEach(m => {
-        const li = document.createElement("li");
-        li.className = "collection-item";
-        li.textContent = discovered.includes(m.index) ? m.name : "?????";
-        list.appendChild(li);
-    });
+    listElement.innerHTML = '';
+    loader.style.display = 'block';
+
+    try {
+        const unlockedList = getDiscoveredMonsters();
+
+        const response = await fetch(`${BASE_URL}/api/monsters`, requestOptions);
+        const data = await response.json();
+        const allMonsters = data.results;
+
+        // Actualizar contadores
+        document.getElementById('total-count').textContent = allMonsters.length;
+        document.getElementById('discovered-count').textContent = unlockedList.length;
+
+        const percentage = (unlockedList.length / allMonsters.length) * 100;
+        document.getElementById('bestiary-progress').style.width = percentage + '%';
+
+        loader.style.display = 'none';
+
+        // Generar lista
+        allMonsters.forEach(monster => {
+            const isUnlocked = unlockedList.includes(monster.index);
+
+            const item = document.createElement('li');
+            item.className = "collection-item avatar valign-wrapper";
+
+            item.innerHTML = `
+                <i class="material-icons circle ${isUnlocked ? 'purple' : 'grey'}">
+                    ${isUnlocked ? 'android' : 'help_outline'}
+                </i>
+
+                <span class="title ${isUnlocked ? 'black-text' : 'grey-text'}">
+                    ${isUnlocked ? monster.name : "?????"}
+                </span>
+
+                <p class="grey-text lighten-1" style="font-size: 0.8rem;">
+                    ${isUnlocked ? "Avistado" : "Desconocido"}<br>
+                    <small>ID: ${isUnlocked ? monster.index : "???"}</small>
+                </p>
+
+                <i class="material-icons secondary-content grey-text">
+                    ${isUnlocked ? 'chevron_right' : 'lock'}
+                </i>
+            `;
+
+            // Si está desbloqueado, permitir ver detalles
+            if (isUnlocked) {
+                item.addEventListener('click', () => {
+                    M.toast({ html: "Detalles: " + monster.name });
+                });
+            }
+
+            listElement.appendChild(item);
+        });
+
+    } catch (error) {
+        console.error(error);
+        loader.innerHTML = "<p class='red-text'>Error cargando bestiario.</p>";
+    }
 }
-// ==============================================================
+
+
+
+// ===============================
 // RANKING
-// ==============================================================
-function showRanking() {
-    hideAll();
-    document.getElementById("ranking-view").style.display = "block";
-    const ranking = JSON.parse(localStorage.getItem("ranking")) || [];
-    const list = document.getElementById("ranking-list");
-    const old = list.querySelectorAll("li:not(.collection-header)");
-    old.forEach(e => e.remove());
-    ranking.forEach(r => {
-        const li = document.createElement("li");
-        li.className = "collection-item";
-        li.innerHTML = `
-            <strong>${r.name}</strong> — Bestias: ${r.beasts}
-        `;
-        list.appendChild(li);
+// ===============================
+
+function saveScore(name, score) {
+    let ranking = JSON.parse(localStorage.getItem("ranking_data")) || [];
+
+    ranking.push({
+        playerName: name,
+        points: score,
+        date: new Date().toLocaleDateString()
     });
+
+    ranking.sort((a, b) => b.points - a.points);
+
+    if (ranking.length > 20) ranking = ranking.slice(0, 20);
+
+    localStorage.setItem("ranking_data", JSON.stringify(ranking));
 }
 
+function showRanking() {
+    document.getElementById('main-menu').style.display = 'none';
+    document.getElementById('bestiary-view').style.display = 'none';
+
+    const rankingView = document.getElementById('ranking-view');
+    rankingView.style.display = 'block';
+
+    const ranking = JSON.parse(localStorage.getItem("ranking_data")) || [];
+    const listElement = document.getElementById('ranking-list');
+
+    // Limpiar lista excepto el header
+    const oldItems = listElement.querySelectorAll('li:not(.collection-header)');
+    oldItems.forEach(item => item.remove());
+
+    if (ranking.length === 0) {
+        const emptyItem = document.createElement('li');
+        emptyItem.className = 'collection-item center-align grey-text';
+        emptyItem.innerText = 'Aún no hay registros.';
+        listElement.appendChild(emptyItem);
+        return;
+    }
+
+    ranking.forEach((player, index) => {
+        const item = document.createElement('li');
+        item.className = 'collection-item avatar';
+
+        let iconColor = 'grey';
+        if (index === 0) iconColor = 'yellow darken-2';
+        if (index === 1) iconColor = 'grey lighten-1';
+        if (index === 2) iconColor = 'brown lighten-1';
+
+        item.innerHTML = `
+            <i class="material-icons circle ${iconColor}">emoji_events</i>
+            <span class="title" style="font-weight:bold;">${player.playerName}</span>
+            <p>
+                Puntos: <strong class="blue-text">${player.points}</strong><br>
+                <small class="grey-text">${player.date}</small>
+            </p>
+            <a class="secondary-content" style="font-size: 1.5rem; color: #444;">#${index + 1}</a>
+        `;
+
+        listElement.appendChild(item);
+    });
+}
